@@ -14,6 +14,14 @@ public class Shape : MonoBehaviour
     private float keyDelay = 2f;
     private float timePassed = 0f;
 
+    //Touch variables
+    private int touchSensHor = 20;
+    private int touchSensVer = 15;
+
+    Vector2 previousPosition = Vector2.zero;
+    Vector2 direction = Vector2.zero;
+
+    bool moved = false;
     
 
 
@@ -44,144 +52,191 @@ public class Shape : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CheckUserInput();
+ 
+    }
+
+    void CheckUserInput()
+    {
+        if(Input.touchCount > 0)
+        {
+            Touch t = Input.GetTouch(0);
+
+            if(t.phase == TouchPhase.Began)
+            {
+                previousPosition = new Vector2(t.position.x, t.position.y);
+            }
+            else if(t.phase == TouchPhase.Moved)
+            {
+                Vector2 touchDelta = t.deltaPosition;
+                direction = touchDelta.normalized;
+
+                if(Mathf.Abs(t.position.x - previousPosition.x) >= touchSensHor && direction.x < 0 && t.deltaPosition.y > -10 && t.deltaPosition.y < 10)
+                {
+                    //---Move Left---
+                    MoveLeft();
+                    previousPosition = t.position;
+                    moved = true;
+
+                } else if(Mathf.Abs(t.position.x - previousPosition.x) >= touchSensHor && direction.x > 0 && t.deltaPosition.y > -10 && t.deltaPosition.y < 10)
+                {
+                    //---Move Right---
+                    MoveRight();
+                    previousPosition = t.position;
+                    moved = true;
+                }
+                else if(Mathf.Abs(t.position.y - previousPosition.y) >= touchSensVer && direction.y < 0 && t.deltaPosition.x > -10 && t.deltaPosition.x < 10)
+                {
+                    //---Move Down---
+                    MoveDown();
+                    previousPosition = t.position;
+                    moved = true;
+
+                }
+                else if(Mathf.Abs(t.position.y - previousPosition.y) >= touchSensVer && direction.y > 0 && t.deltaPosition.x > -10 && t.deltaPosition.x < 10)
+                {
+                    //---Save shape---
+                    SaveShape();
+
+                }
+            } 
+            else if(t.phase == TouchPhase.Ended)
+            {
+                if (!moved)
+                {
+                    Rotate();
+
+                }
+                moved = false;
+            }
+        }
+
 
         //move shape left
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            transform.position += new Vector3(-1, 0, 0);
-
-            if (!IsInGrid())
-            {
-                transform.position += new Vector3(1, 0, 0);
-            }
-            else
-            {
-                UpdateGameBoard();
-                SoundManager.Instance.PlayOneShot(SoundManager.Instance.shapeMove);
-            }
+            MoveLeft();
         }
 
         //Move shape Right
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            transform.position += new Vector3(1, 0, 0);
-
-            if (!IsInGrid())
-            {
-                transform.position += new Vector3(-1, 0, 0);
-            }
-            else
-            {
-                UpdateGameBoard();
-                SoundManager.Instance.PlayOneShot(SoundManager.Instance.shapeMove);
-            }
+            MoveRight();
         }
 
         timePassed += Time.deltaTime;
-        
-        /*if (Input.GetKey(KeyCode.DownArrow)  && timePassed >= keyDelay)
-        {
-                
-                transform.position += new Vector3(0, -1, 0);
-                if (!IsInGrid())
-                {
-                    transform.position += new Vector3(0, 1, 0);
-                    enabled = false;
 
-                    FindObjectOfType<ShapeSpawner>().SpawnShape();
-                }
-                else
-                {
-                    UpdateGameBoard();
-                }
-
-                spaceFromBottom++;
-                lastMovedDown = Time.time;
-            
-
-        }
-        */
-
+        //move the shape down once
         if (Input.GetKeyDown(KeyCode.DownArrow) || Time.time - lastMovedDown >= Shape.speed)
         {
-            transform.position += new Vector3(0, -1, 0);
-            if (!IsInGrid())
-            {
-                transform.position += new Vector3(0, 1, 0);
-
-                bool rowDeleted = GameBoard.DeleteFullRows();
-
-                if (rowDeleted)
-                {
-                    GameBoard.DeleteFullRows();
-                    IncreaseScore();
-
-              
-                }
-                enabled = false;
-                tag = "Untagged";
-
-                FindObjectOfType<ShapeSpawner>().SpawnShape();
-
-            }
-            else
-            {
-                UpdateGameBoard();
-                SoundManager.Instance.PlayOneShot(SoundManager.Instance.shapeMove);
-
-            }
-
-            spaceFromBottom++;
-            lastMovedDown = Time.time;
+            MoveDown();
 
         }
 
         //rotate shape 90 degrees
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            transform.Rotate(0, 0, 90);
-
-            if (!IsInGrid())
-            {
-                transform.position += new Vector3(0, 0, -90);
-            }
-            else
-            {
-                UpdateGameBoard();
-                SoundManager.Instance.PlayOneShot(SoundManager.Instance.rotateSound);
-            }
+            Rotate();
         }
 
-        //if space is pressed, instantly puts block at the bottom
+        //If Shift is pressed, save current shape
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-
-            
-
             SaveShape();
-
-
-            //FindObjectOfType<ShapeSpawner>().SaveShape(this);
         }
-        
+    }
+
+    void MoveLeft()
+    {
+        transform.position += new Vector3(-1, 0, 0);
+
+        if (!IsInGrid())
+        {
+            transform.position += new Vector3(1, 0, 0);
+        }
+        else
+        {
+            UpdateGameBoard();
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.shapeMove);
+        }
+    }
+
+    void MoveRight()
+    {
+        transform.position += new Vector3(1, 0, 0);
+
+        if (!IsInGrid())
+        {
+            transform.position += new Vector3(-1, 0, 0);
+        }
+        else
+        {
+            UpdateGameBoard();
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.shapeMove);
+        }
+    }
+
+    void MoveDown()
+    {
+        transform.position += new Vector3(0, -1, 0);
+        if (!IsInGrid())
+        {
+            transform.position += new Vector3(0, 1, 0);
+
+            bool rowDeleted = GameBoard.DeleteFullRows();
+
+            if (rowDeleted)
+            {
+                GameBoard.DeleteFullRows();
+                IncreaseScore();
+
+
+            }
+            enabled = false;
+            tag = "Untagged";
+
+            FindObjectOfType<ShapeSpawner>().SpawnShape();
+
+        }
+        else
+        {
+            UpdateGameBoard();
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.shapeMove);
+
+        }
+
+        spaceFromBottom++;
+        lastMovedDown = Time.time;
 
     }
+
+    void Rotate()
+    {
+        transform.Rotate(0, 0, 90);
+
+        if (!IsInGrid())
+        {
+            transform.position += new Vector3(0, 0, -90);
+        }
+        else
+        {
+            UpdateGameBoard();
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.rotateSound);
+        }
+    }
+
+
+
 
     public void SaveShape()
     {
         GameObject save = GameObject.FindGameObjectWithTag("CurrentActiveShape");
         FindObjectOfType<ShapeSpawner>().SaveShape(save.transform);
 
-        Debug.Log("Shift is pressed");
     }
-
-
-
-
 
     public bool IsInGrid()
     {
-
         foreach (Transform childBlock in transform)
         {
             Vector2 vect = RoundVector(childBlock.position);
@@ -207,7 +262,6 @@ public class Shape : MonoBehaviour
             (int)pos.x <= 10 &&
             (int)pos.y >= 1);
     }
-
 
     public void UpdateGameBoard()
     {

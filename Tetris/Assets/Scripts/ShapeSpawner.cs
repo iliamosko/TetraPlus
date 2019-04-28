@@ -39,9 +39,7 @@ public class ShapeSpawner : MonoBehaviour
             Quaternion.identity);
         shapes[shapeIndex].tag = "CurrentActiveShape";
 
-        
-
-        Debug.Log(shapes[shapeIndex].tag);
+        nextShape = shapes[shapeIndex];
 
         nextShapeIndex = UnityEngine.Random.Range(0, 7);
 
@@ -91,7 +89,7 @@ public class ShapeSpawner : MonoBehaviour
 
         if(savedShape != null)
         {
-            //There is a saved shape
+            //---There is a saved shape---
             GameObject tempSaveShape = GameObject.FindGameObjectWithTag("CurrentSavedShape");
 
             tempSaveShape.transform.localPosition = new Vector2(10 / 2 ,20);
@@ -112,12 +110,14 @@ public class ShapeSpawner : MonoBehaviour
             DestroyImmediate(s.gameObject);
             DestroyImmediate(tempSaveShape);
 
+            SpawnGhost();
+
 
         }
         else
         {
 
-            //no shape saved
+            //---no shape saved---
             savedShape = (GameObject)Instantiate(GameObject.FindGameObjectWithTag("CurrentActiveShape"));
             if (savedShape == null)
                 Debug.Log("Didnt get");
