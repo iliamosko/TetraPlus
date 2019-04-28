@@ -13,7 +13,6 @@ public class ShapeSpawner : MonoBehaviour
     bool saved = false;
 
     GameObject nextObject = null;
-    //public static GameObject saveObject = null;
 
     int shapeIndex = 0;
     int nextShapeIndex = 0;
@@ -48,6 +47,16 @@ public class ShapeSpawner : MonoBehaviour
         if (nextObject != null)
             Destroy(nextObject);
 
+        if(nextShapeIndex == shapeIndex)
+        {
+            //---Makes sure no shape is spawned 2+ times in a row---
+            //Debug.Log("Next shape is equal to current shape");
+            while(nextShapeIndex == shapeIndex)
+            {
+                nextShapeIndex = UnityEngine.Random.Range(0, 7);
+            }
+        }
+
         nextObject = Instantiate(nextShapes[nextShapeIndex],
             nextShapePos,
             Quaternion.identity);
@@ -66,6 +75,8 @@ public class ShapeSpawner : MonoBehaviour
     }
 
 
+
+
     bool CheckIsValidPosition(GameObject shape)
     {
         foreach(Transform mino in shape.transform)
@@ -74,7 +85,6 @@ public class ShapeSpawner : MonoBehaviour
             
             if (!Shape.IsInBorder(pos))
                 return false;
-            
         }
         return true;
     }
@@ -147,19 +157,24 @@ public class ShapeSpawner : MonoBehaviour
         ghostShape.AddComponent<GhostShape>();
     }
 
+    public Transform CheckBottom(Vector2 pos)
+    {
+        if (pos.y > 20)
+        {
+            return null;
+        }
+        else
+        {
+            return GameBoard.gameBoard[(int)pos.x - 1, (int)pos.y - 1];
+        }
 
+    }
     // Use this for initialization
     void Start()
     {
         nextShapeIndex = UnityEngine.Random.Range(0, 7);
 
         SpawnShape();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
 

@@ -78,7 +78,7 @@ public class GameBoard : MonoBehaviour {
         {
             try 
             {
-                Debug.Log("rows: " + row + "Collumns" + c);
+                //Debug.Log("rows: " + row + "Collumns" + c);
                 if (gameBoard[c, row] == null)
                 {
                     return false;
@@ -99,7 +99,7 @@ public class GameBoard : MonoBehaviour {
         {
             try
             {
-                Debug.Log(" in Delete Row: rows: " + row + "Collumns" + c);
+               // Debug.Log(" in Delete Row: rows: " + row + "Collumns" + c);
                 Destroy(gameBoard[c, row].gameObject);
                 gameBoard[c, row] = null;
             }

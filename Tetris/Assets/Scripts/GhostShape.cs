@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GhostShape : MonoBehaviour
 {
-
+    public Vector2 ghostShapePos; 
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +22,11 @@ public class GhostShape : MonoBehaviour
     void Update()
     {
         FollowActiveShape();
+    }
+
+    public Vector2 GetPosition()
+    {
+        return this.ghostShapePos;
     }
 
     void FollowActiveShape()
@@ -45,18 +50,22 @@ public class GhostShape : MonoBehaviour
         {
             transform.position += new Vector3(0, 1, 0);
         }
+
+        ghostShapePos = transform.position;
     }
 
 
-    bool CheckIsValidPos()
+    public bool CheckIsValidPos()
     {
         foreach(Transform mino in transform)
         {
             Vector2 pos = FindObjectOfType<Shape>().RoundVector(mino.position);
             if (Shape.IsInBorder(pos) == false)
                 return false;
-
-
+            if (FindObjectOfType<ShapeSpawner>().CheckBottom(pos) != null && FindObjectOfType<ShapeSpawner>().CheckBottom(pos).parent.tag == "CurrentActiveShape")
+                return true;
+            if (FindObjectOfType<ShapeSpawner>().CheckBottom(pos) != null && FindObjectOfType<ShapeSpawner>().CheckBottom(pos).parent != transform)
+                return false;
         }
         return true;
 

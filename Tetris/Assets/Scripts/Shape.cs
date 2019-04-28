@@ -58,6 +58,8 @@ public class Shape : MonoBehaviour
 
     void CheckUserInput()
     {
+
+        //---Touch Controls---
         if(Input.touchCount > 0)
         {
             Touch t = Input.GetTouch(0);
@@ -111,6 +113,7 @@ public class Shape : MonoBehaviour
             }
         }
 
+        //---Keyboard controls for testing---
 
         //move shape left
         if (Input.GetKeyDown(KeyCode.LeftArrow))
@@ -143,6 +146,12 @@ public class Shape : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             SaveShape();
+        }
+
+        //Instantly drop the shape to the available space at the bottom of the grid
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            DropDown();
         }
     }
 
@@ -216,7 +225,7 @@ public class Shape : MonoBehaviour
 
         if (!IsInGrid())
         {
-            transform.position += new Vector3(0, 0, -90);
+            transform.Rotate(0, 0, -90);
         }
         else
         {
@@ -225,6 +234,39 @@ public class Shape : MonoBehaviour
         }
     }
 
+    void DropDown()
+    {
+        transform.position = FindObjectOfType<GhostShape>().GetPosition();
+        if (!IsInGrid())
+        {
+
+            bool rowDeleted = GameBoard.DeleteFullRows();
+
+            if (rowDeleted)
+            {
+                GameBoard.DeleteFullRows();
+                IncreaseScore();
+
+
+            }
+            enabled = false;
+            tag = "Untagged";
+
+            FindObjectOfType<ShapeSpawner>().SpawnShape();
+
+        }
+        else
+        {
+            UpdateGameBoard();
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.shapeMove);
+
+        }
+
+        
+        lastMovedDown = Time.time;
+
+
+    }
 
 
 
@@ -273,7 +315,7 @@ public class Shape : MonoBehaviour
                     GameBoard.gameBoard[x, y].parent == transform)
                 {
                     GameBoard.gameBoard[x, y] = null;
-                    Debug.Log("This is true");
+                    //Debug.Log("This is true");
                 }
             }
         }
@@ -285,7 +327,7 @@ public class Shape : MonoBehaviour
 
             GameBoard.gameBoard[(int)vect.x-1, (int)vect.y-1] = childBlock;
 
-            Debug.Log("Cube at:" + vect.x + " " + vect.y);
+            //Debug.Log("Cube at:" + vect.x + " " + vect.y);
 
 
         }
