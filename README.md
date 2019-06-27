@@ -1,4 +1,6 @@
 # TetraPlus
+## THIS IS STILL A WORK IN PROGRESS
+
 TetraPlus is a Tetris game made using Unity. TetraPlus comes packed with different features and add-ons to make the game fun
 and enjoyable for the user. 
 
@@ -6,6 +8,12 @@ and enjoyable for the user.
 Description of all features is still in progress, there maybe additional features added on later on, or some features might be taken out.
 
                                                   !!!IMPORTANT!!!
+                                                  
+### Images & Videos  
+1. Gameplay Video
+
+![](Tetris/Assets/Pictures/gamplay-vid.gif)
+
 # Features
 ### 1. Tetrimo color and design
 Different colors for the tetrimo will be available for the user to choose from with additional Tetrimo styles. 
