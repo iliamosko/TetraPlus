@@ -25,6 +25,7 @@ public class GameBoard : MonoBehaviour {
         numRowsDel = 0;
     }
 
+
     public static void CheckNextLevel()
     {
         if(lineClearsNeaded == 0)
@@ -65,6 +66,9 @@ public class GameBoard : MonoBehaviour {
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.rowDelete);
                 GameBoard.LineCleared();
                 GameBoard.CheckNextLevel();
+
+                
+                Debug.Log(numRowsDel);
                 return true;
 
             } 
@@ -74,7 +78,7 @@ public class GameBoard : MonoBehaviour {
 
     public static bool IsRowFull(int row)
     {
-        for(int c = 0; c < 10; c++)
+        for(int c = 0; c < 10; ++c)
         {
             try 
             {
@@ -111,9 +115,11 @@ public class GameBoard : MonoBehaviour {
         }
         row++;
 
-        for(int i = row; i < 20; i++)
+        Debug.Log("Deleted row" + row);
+
+        for(int i = row; i < 20; ++i)
         {
-            for(int c = 0; c < 10; c++)
+            for(int c = 0; c < 10; ++c)
             {
                 try
                 {
@@ -132,5 +138,6 @@ public class GameBoard : MonoBehaviour {
                 }
             }
         }
+        Debug.Log("Shifted rows down");
     }
 }

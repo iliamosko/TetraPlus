@@ -263,7 +263,7 @@ public class Shape : MonoBehaviour
         }
 
         
-        lastMovedDown = Time.time;
+        lastMovedDown = 0;
 
 
     }
