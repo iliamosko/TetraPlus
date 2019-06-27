@@ -34,7 +34,7 @@ Achievements will be similar to goals, but they will be achieved in the long ron
 accomplish to unlock those achievements.
 
 ### 5. Different sizes of playing field
-The original size playing field for Tetris is a 10x20 play area, with the addition of small, Lard and X-Large play areas, users can enjoy 
+The original size playing field for Tetris is a 10x20 play area, with the addition of small, large and X-Large play areas, users can enjoy 
 playing Tetris on new playing fields. These playing fields will be unlocked by using P-coins or through certain challanges/acheievements. 
 
 ### 6. Highscores
