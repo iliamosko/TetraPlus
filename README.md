@@ -8,6 +8,9 @@ and enjoyable for the user.
 Description of all features is still in progress, there maybe additional features added on later on, or some features might be taken out.
 
                                                   !!!IMPORTANT!!!
+### Playable Version
+[Click me](https://github.com/iliamosko/TetraPlus-Playable)
+                                                  
                                                   
 ### Images & Videos  
 1. Gameplay Video
